@@ -1,13 +1,13 @@
 #include <iostream>
 #include <fstream>
-#include "../include/json.hpp"
+#include <algorithm>
 #include <cmath>
 #include <map>
 
+#include "../include/json.hpp"
+
 using namespace std;
 using json = nlohmann::json;
-
-double defaultDistance = 80000;
 
 struct ServiceProvider {
     int id;
@@ -29,6 +29,7 @@ struct PostcodeInfo {
     string extension_group;
 };
 
+double defaultDistance = 80000;
 const double EARTH_RADIUS = 6371.0;
 
 
@@ -94,9 +95,8 @@ unordered_map<int, ServiceProvider> readProviders(string profile_filename, strin
     scoreFile.close();
 
     for (const auto& entry : data) {
-        ServiceProvider provider = providersMap[entry["profile_id"]];
-        provider.profile_picture_score = entry["profile_picture_score"];
-        provider.profile_description_score = entry["profile_description_score"];
+        providersMap[entry["profile_id"]].profile_picture_score = entry["profile_picture_score"];
+        providersMap[entry["profile_id"]].profile_description_score = entry["profile_description_score"];
     }
 
     return providersMap;
@@ -121,6 +121,7 @@ double calculateRank(double distance, const ServiceProvider& provider) {
     return rank;
 }
 
+
 vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, const unordered_map<int, ServiceProvider>& all_providers) {
     auto it = postcodes.find(customerPostcode);
     if (it == postcodes.end()) return {};
@@ -134,6 +135,8 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
     }
 
     vector<pair<ServiceProvider, double>> providers;
+    providers.reserve(10000);
+
     for (const auto& provider : all_providers) {
         ServiceProvider curr = provider.second;
         double distance = calculateDistance(curr.lat, curr.lon, info.lat, info.lon);
@@ -141,6 +144,7 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
             providers.push_back(make_pair(curr, calculateRank(distance, curr)));
         }
     }
+
 
     sort(providers.begin(), providers.end(), [](const auto& a, const auto& b) {
         return a.second > b.second; 
@@ -160,17 +164,27 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
 int main() {
     unordered_map<string, PostcodeInfo> postcodes = readPostcodes("data/postcode.json");
     unordered_map<int, ServiceProvider> all_providers = readProviders("data/service_provider_profile.json", "data/quality_factor_score.json");
-    cout << "nr of postcodes: " << postcodes.size() << "\n";
-    cout << "nr of providers: " << all_providers.size() << "\n";
+ //   cout << "nr of postcodes: " << postcodes.size() << "\n";
+ //   cout << "nr of providers: " << all_providers.size() << "\n";
 
     string postcode;
     cin >> postcode;
 
-    vector<ServiceProvider> ans = getTopRankedProviders(postcode, postcodes, all_providers);
-
+    vector<ServiceProvider> lol = getTopRankedProviders(postcode, postcodes, all_providers);
     for (int i = 0; i < 20; i++) {
-        cout << ans[i].first_name << " " << ans[i].last_name << "\n";
+        cout << lol[i].id << endl;
     }
+
+    unordered_map<string, vector<ServiceProvider>> ans;
+ //   auto start = chrono::high_resolution_clock::now();
+    for (auto it = postcodes.begin(); it != postcodes.end(); it++) {
+        ans.insert({it->first, getTopRankedProviders(it->first, postcodes, all_providers)});
+    }
+
+//   auto end = chrono::high_resolution_clock::now();
+//   auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+
+//    cout << "Execution Time: " << duration << " ms\n";
 
     return 0;
 }

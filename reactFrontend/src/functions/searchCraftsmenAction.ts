@@ -18,6 +18,6 @@ export async function searchCraftsmenAction({
     }
     return redirect("/craftsmen/update");
   }
-  // postcode is valid, redirect to ranked results page
+  // craftsmanId is valid, redirect to update page
   return redirect(`/craftsmen/update/${craftsmanId}`);
 }

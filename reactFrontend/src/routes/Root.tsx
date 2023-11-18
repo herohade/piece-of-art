@@ -1,5 +1,6 @@
 import { useState } from "react";
-import NavBar from "../components/NavBar";
+
+import Page from "../components/Page";
 
 import "../css/Root.css";
 
@@ -8,8 +9,8 @@ import "../css/Root.css";
 function Root() {
   const [count, setCount] = useState(100);
 
-  return (
-    <>
+  const content = (
+    <div className="contentBody">
       <div className="rotate">Rest in Peace</div>
       <h1>We are fucked</h1>
       <div className="card">
@@ -17,9 +18,10 @@ function Root() {
           {count} people agree
         </button>
       </div>
-      <NavBar />
-    </>
+    </div>
   );
+
+  return <Page content={content} />;
 }
 
 export default Root;

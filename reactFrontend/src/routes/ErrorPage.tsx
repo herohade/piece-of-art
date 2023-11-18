@@ -1,5 +1,5 @@
 import { useRouteError } from "react-router-dom";
-import NavBar from "../components/NavBar";
+import Page from "../components/Page";
 
 // Page to display when an error occurs
 export default function ErrorPage() {
@@ -9,7 +9,7 @@ export default function ErrorPage() {
     console.error(error);
   }
 
-  return (
+  const content = (
     <>
       <div id="error-page">
         <h1>Oops!</h1>
@@ -18,7 +18,7 @@ export default function ErrorPage() {
           <i>{error.statusText || error.message}</i>
         </p>
       </div>
-      <NavBar />
     </>
   );
+  return <Page content={content} />;
 }

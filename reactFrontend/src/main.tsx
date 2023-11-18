@@ -5,7 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import './index.css'
+import './css/index.css'
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
 import SearchCraftsmenByPostcodePage from './routes/SearchCraftsmenByPostcodePage';
@@ -14,6 +14,7 @@ import UpdateCraftsmenPage from './routes/UpdateCraftsmenPage';
 import SelectCraftsmenById from './routes/SelectCraftsmenById';
 import { searchPostcodesAction } from './functions/searchPostcodesAction';
 import { searchCraftsmenAction } from './functions/searchCraftsmenAction';
+import { updateCraftsmenAction } from './functions/updateCraftsmenAction';
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
     path: "/craftsmen/update/:id",
     element: <UpdateCraftsmenPage />,
     errorElement: <ErrorPage />,
+    action: updateCraftsmenAction,
   },
 ]);
 

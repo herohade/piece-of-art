@@ -1,0 +1,3 @@
+[submodule "adaptive-radix-tree"]
+	path = adaptive-radix-tree
+	url = https://github.com/rafaelkallis/adaptive-radix-tree

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Form, useLocation, useParams } from "react-router-dom";
 import Craftman from "../components/Craftman";
 import Page from "../components/Page";
 import { useEffect, useState } from "react";
@@ -14,9 +14,14 @@ function RankedCraftsmenPage() {
     throw new Error("No postcode provided");
   }
 
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const { count } = Object.fromEntries(params);
+  const numEntries = isNaN(Number(count)) ? 20 : Number(count);
+
   const [sortedCraftsman, setSortedCraftsman] = useState([] as Craftsman[]);
   useEffect(() => {
-    getCraftsmenByPostalCode(postcode).then(
+    getCraftsmenByPostalCode(postcode, numEntries).then(
       (response: Response | undefined) => {
         if (!response) {
           if (import.meta.env.DEV) {
@@ -28,11 +33,7 @@ function RankedCraftsmenPage() {
         setSortedCraftsman(craftsmen || []);
       }
     );
-  }, [postcode]);
-
-  // const {search} = useLocation();
-  // const params = new URLSearchParams(search);
-  // const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } = Object.fromEntries(params);
+  }, [postcode, numEntries]);
 
   const content = (
     <>
@@ -49,9 +50,9 @@ function RankedCraftsmenPage() {
             </li>
           ))}
       </ul>
-      <button>
-        Load More
-      </button>
+      <Form method="post" id="load-more-form">
+        <button type="submit">Load More</button>
+      </Form>
     </>
   );
   return <Page content={content} />;

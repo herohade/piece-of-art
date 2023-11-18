@@ -4,9 +4,9 @@ const { getCraftsmen, patchCraftman } = DefaultService;
 
 OpenAPI.BASE = "http://localhost:3000";
 
-export const getCraftsmenByPostalCode = async (postalCode: string) => {
+export const getCraftsmenByPostalCode = async (postalCode: string, maximum?: number) => {
   try {
-    return await getCraftsmen(postalCode);
+    return await getCraftsmen(postalCode, maximum);
   } catch (error) {
     console.error(error);
   }

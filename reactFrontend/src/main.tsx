@@ -15,6 +15,7 @@ import SelectCraftsmenById from './routes/SelectCraftsmenById';
 import { searchPostcodesAction } from './functions/searchPostcodesAction';
 import { searchCraftsmenAction } from './functions/searchCraftsmenAction';
 import { updateCraftsmenAction } from './functions/updateCraftsmenAction';
+import { loadMoreCraftsmen } from './functions/loadMoreCraftsmen';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,7 @@ const router = createBrowserRouter([
     path: "/craftsmen/search/:postcode",
     element: <RankedCraftsmenPage />,
     errorElement: <ErrorPage />,
+    action: loadMoreCraftsmen,
   },
   {
     // Page for selecting the craftsman to update

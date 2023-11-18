@@ -1,0 +1,10 @@
+.DS_Store
+build
+*.swp
+compile_commands.json
+dataset.txt
+massif.*
+cachegrind.*
+callgrind.*
+cmake-build-debug
+.idea

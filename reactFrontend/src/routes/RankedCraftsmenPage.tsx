@@ -1,10 +1,13 @@
+import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 // Page for searching craftsmen by postcode
 function RankedCraftsmenPage() {
+  // get postcode from url: /craftsmen/search/:postcode
+  const { postcode } = useParams();
   return (
     <>
-      <h1>Ranked craftsmen</h1>
+      <h1>Ranked craftsmen for postcode {postcode}</h1>
       <ul>
         <li>1. Max Mustermann</li>
         <li>2. Max Mustermann</li>

@@ -2,7 +2,7 @@ import { Form } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 // Page for searching craftsmen by postcode
-function SearchCraftsmenPage() {
+function SearchCraftsmenByPostcodePage() {
   return (
     <>
       <h1>Search for craftsmen by postcode</h1>
@@ -18,4 +18,4 @@ function SearchCraftsmenPage() {
   );
 }
 
-export default SearchCraftsmenPage;
+export default SearchCraftsmenByPostcodePage;

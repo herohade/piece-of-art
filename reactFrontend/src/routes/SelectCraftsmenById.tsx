@@ -2,14 +2,14 @@ import { Form } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 // Page for searching the craftsman to update
-function SelectCraftsmenForUpdatePage() {
+function SelectCraftsmenById() {
   return (
     <>
       <h1>Search for the craftsman to update by id</h1>
       {/* input form asking for german postcode (5 digits) */}
-      <Form id="craftsman-search-form" role="search">
+      <Form method="post" id="craftsman-search-form" role="search">
         <label>
-          <input type="number" name="craftsman" />
+          <input type="number" name="craftsmanId" />
         </label>
         <button type="submit">Search</button>
       </Form>
@@ -18,4 +18,4 @@ function SelectCraftsmenForUpdatePage() {
   );
 }
 
-export default SelectCraftsmenForUpdatePage;
+export default SelectCraftsmenById;

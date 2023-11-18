@@ -8,10 +8,11 @@ import {
 import './index.css'
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
-import SearchCraftsmenPage from './routes/SearchCraftsmenPage';
+import SearchCraftsmenByPostcodePage from './routes/SearchCraftsmenByPostcodePage';
 import RankedCraftsmenPage from './routes/RankedCraftsmenPage';
 import UpdateCraftsmenPage from './routes/UpdateCraftsmenPage';
-import SelectCraftsmenForUpdatePage from './routes/SelectCraftsmenForUpdatePage';
+import SelectCraftsmenById from './routes/SelectCraftsmenById';
+import { searchPostcodesAction } from './functions/searchPostcodesAction';
 import { searchCraftsmenAction } from './functions/searchCraftsmenAction';
 
 const router = createBrowserRouter([
@@ -22,25 +23,29 @@ const router = createBrowserRouter([
   },
   {
     // Page for searching craftsmen by postcode
-    path: "craftsmen/search",
-    element: <SearchCraftsmenPage/>,
+    path: "/craftsmen/search",
+    element: <SearchCraftsmenByPostcodePage/>,
+    errorElement: <ErrorPage />,
+    action: searchPostcodesAction,
+  },
+  {
+    // Page for displaying ranked craftsmen
+    path: "/craftsmen/search/:postcode",
+    element: <RankedCraftsmenPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    // Page for selecting the craftsman to update
+    path: "/craftsmen/update",
+    element: <SelectCraftsmenById />,
     errorElement: <ErrorPage />,
     action: searchCraftsmenAction,
   },
   {
-    // Page for displaying ranked craftsmen
-    path: "craftsmen/search/:postcode",
-    element: <RankedCraftsmenPage />,
-  },
-  {
-    // Page for selecting the craftsman to update
-    path: "craftsmen/update",
-    element: <SelectCraftsmenForUpdatePage />,
-  },
-  {
     // Page for updating craftsmen attributes
-    path: "craftsmen/update/:id",
+    path: "/craftsmen/update/:id",
     element: <UpdateCraftsmenPage />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

@@ -7,19 +7,17 @@ export async function searchCraftsmenAction({
 }) {
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
-  const { postcode } = updates;
-  // postcode should be 5 digits, if not, redirect to search page
+  const { craftsmanId } = updates;
+  // craftsmanId should be numeric, if not, redirect to search page
   if (
-    typeof postcode.valueOf() !== "string" ||
-    (postcode.valueOf() as string).length !== 5 ||
-    isNaN(Number(postcode.valueOf())) ||
-    Number(postcode.valueOf()) < 0
+    typeof craftsmanId.valueOf() !== "string" ||
+    isNaN(Number(craftsmanId.valueOf()))
   ) {
     if (import.meta.env.DEV) {
-      console.log("postcode is not valid", postcode);
+      console.log("craftsmanId is not valid", craftsmanId);
     }
-    return redirect("/craftsmen/search");
+    return redirect("/craftsmen/update");
   }
   // postcode is valid, redirect to ranked results page
-  return redirect(`/craftsmen/search/${postcode}`);
+  return redirect(`/craftsmen/update/${craftsmanId}`);
 }

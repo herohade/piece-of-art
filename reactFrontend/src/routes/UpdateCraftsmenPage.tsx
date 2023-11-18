@@ -1,10 +1,13 @@
+import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
 // Page for searching craftsmen by postcode
 function UpdateCraftsmenPage() {
+  // get id from url: /craftsmen/update/:id
+  const { id } = useParams();
   return (
     <>
-      <h1>Ranked craftsmen</h1>
+      <h1>Update this Craftsman {id}</h1>
       <ul>
         <li>1. Max Mustermann</li>
         <li>2. Max Mustermann</li>

@@ -9,6 +9,10 @@
 using namespace std;
 using json = nlohmann::json;
 
+
+const double defaultDistance = 80000;
+const double EARTH_RADIUS = 6371.0;
+
 struct ServiceProvider {
     int id;
     string first_name;
@@ -29,10 +33,7 @@ struct PostcodeInfo {
     string extension_group;
 };
 
-double defaultDistance = 80000;
-const double EARTH_RADIUS = 6371.0;
-
-
+//  Returns a map of postcodes from a json file
 unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
     ifstream file(filename);
 
@@ -56,6 +57,9 @@ unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
     }
     return postcodeMap;
 }
+
+
+// Returns a map of providers from service provider and quality factor files
 
 unordered_map<int, ServiceProvider> readProviders(string profile_filename, string score_filename) {
     ifstream file(profile_filename);
@@ -102,6 +106,7 @@ unordered_map<int, ServiceProvider> readProviders(string profile_filename, strin
     return providersMap;
 }
 
+// Calculates distance in meters between two coordinates
 double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     lat1 *= M_PI / 180.0;
     lon1 *= M_PI / 180.0;
@@ -112,6 +117,7 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     return dist * 1000;
 }
 
+// Calculates the rank of a provider given a certain distance from the post code
 double calculateRank(double distance, const ServiceProvider& provider) {
     double distanceScore = 1.0 - (distance / defaultDistance);
     double distanceWeight = (distance > defaultDistance) ? 0.01 : 0.15;
@@ -121,7 +127,7 @@ double calculateRank(double distance, const ServiceProvider& provider) {
     return rank;
 }
 
-
+// Returns a sorted vector of service providers according to their rank
 vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, const unordered_map<int, ServiceProvider>& all_providers) {
     auto it = postcodes.find(customerPostcode);
     if (it == postcodes.end()) return {};
@@ -135,10 +141,9 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
     }
 
     vector<pair<ServiceProvider, double>> providers;
-    providers.reserve(10000);
 
     for (const auto& provider : all_providers) {
-        ServiceProvider curr = provider.second;
+        const ServiceProvider& curr = provider.second;
         double distance = calculateDistance(curr.lat, curr.lon, info.lat, info.lon);
         if (distance <= curr.max_driving_distance + delta_distance) {
             providers.push_back(make_pair(curr, calculateRank(distance, curr)));
@@ -151,10 +156,8 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
     });
 
     vector<ServiceProvider> sortedProviders;
-
     for (const auto& pair : providers) {
-        const ServiceProvider& serviceProvider = pair.first;
-        sortedProviders.push_back(serviceProvider);
+        sortedProviders.push_back(pair.first);
     }
 
     return sortedProviders;
@@ -164,8 +167,6 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
 int main() {
     unordered_map<string, PostcodeInfo> postcodes = readPostcodes("data/postcode.json");
     unordered_map<int, ServiceProvider> all_providers = readProviders("data/service_provider_profile.json", "data/quality_factor_score.json");
- //   cout << "nr of postcodes: " << postcodes.size() << "\n";
- //   cout << "nr of providers: " << all_providers.size() << "\n";
 
     string postcode;
     cin >> postcode;
@@ -176,15 +177,15 @@ int main() {
     }
 
     unordered_map<string, vector<ServiceProvider>> ans;
- //   auto start = chrono::high_resolution_clock::now();
+    auto start = chrono::high_resolution_clock::now();
     for (auto it = postcodes.begin(); it != postcodes.end(); it++) {
         ans.insert({it->first, getTopRankedProviders(it->first, postcodes, all_providers)});
     }
 
-//   auto end = chrono::high_resolution_clock::now();
-//   auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    auto end = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
 
-//    cout << "Execution Time: " << duration << " ms\n";
+    cout << "Execution Time: " << duration << " ms\n";
 
     return 0;
 }

@@ -8,7 +8,11 @@ import {
 import './index.css'
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
-import SearchPage from './routes/SearchPage';
+import SearchCraftsmenPage from './routes/SearchCraftsmenPage';
+import RankedCraftsmenPage from './routes/RankedCraftsmenPage';
+import UpdateCraftsmenPage from './routes/UpdateCraftsmenPage';
+import SelectCraftsmenForUpdatePage from './routes/SelectCraftsmenForUpdatePage';
+import { searchCraftsmenAction } from './functions/searchCraftsmenAction';
 
 const router = createBrowserRouter([
   {
@@ -17,19 +21,26 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    // Page for searching craftsmen by postcode
     path: "craftsmen/search",
-    element: <SearchPage/>,
+    element: <SearchCraftsmenPage/>,
     errorElement: <ErrorPage />,
+    action: searchCraftsmenAction,
   },
   {
+    // Page for displaying ranked craftsmen
     path: "craftsmen/search/:postcode",
-    // TODO
-    element: <Root />,
+    element: <RankedCraftsmenPage />,
   },
   {
+    // Page for selecting the craftsman to update
+    path: "craftsmen/update",
+    element: <SelectCraftsmenForUpdatePage />,
+  },
+  {
+    // Page for updating craftsmen attributes
     path: "craftsmen/update/:id",
-    // TODO
-    element: <Root />,
+    element: <UpdateCraftsmenPage />,
   },
 ]);
 

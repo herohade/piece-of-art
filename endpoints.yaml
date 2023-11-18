@@ -58,6 +58,12 @@ components:
           type: string
         rankingScore:
           type: number
+        minimum:
+          type: number
+          nullable: true
+        maximum:
+          type: number
+          nullable: true
 
     Response:
       type: object

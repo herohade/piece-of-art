@@ -4,6 +4,7 @@
 #include "../include/craftsman.h"
 #include <nlohmann/json.hpp> // Include the correct JSON library
 #include <string>
+#include <algorithm>
 
 
 // In-memory data store
@@ -48,11 +49,23 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
         res.code = 400;
         res.end();
     }
+    if (req.url_params.get("maximum") != nullptr) {
+        int limit = std::stoi(req.url_params.get("maximum"));
+        nlohmann::json newResponse;
+        newResponse["craftsmen"] = nlohmann::json::array();
+        limit = fmin(limit, response["craftsmen"].size());
+        for (int i = 0; i < limit; ++i) {
+            newResponse["craftsmen"][i] = response["craftsmen"][i];
+        }
+        res.body = newResponse.dump();
+        res.end();
+    }
+    else {
+        res.body = response.dump();
+    }
     res.code = 200;
-    res.body = response.dump();
     res.set_header("Content-Type", "application/json");
     res.set_header("Access-Control-Allow-Origin", "http://localhost:5173");
-
     // Send the response
     res.end();
 }

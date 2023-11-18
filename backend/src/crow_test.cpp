@@ -2,8 +2,8 @@
 #include <iostream>
 #include <vector>
 #include "../include/craftsman.h"
-#include <iostream>
 #include <nlohmann/json.hpp> // Include the correct JSON library
+#include <string>
 
 
 // In-memory data store
@@ -44,8 +44,10 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
     } else {
         // No craftsmen found
         response["error"] = "No craftsmen found for the provided postal code.";
+        res.body = response.dump();
+        res.code = 400;
+        res.end();
     }
-
     res.code = 200;
     res.body = response.dump();
     res.set_header("Content-Type", "application/json");
@@ -67,8 +69,7 @@ void updateCraftsmanProfile(crow::response &res, int craftsmanId) {
 void getEndpoints(crow::response &res) {
     try {
         // Convert YAML to JSON
-        res.body = "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Craftsmen Service API\",\"version\":\"1.0.0\"},\"servers\":[{\"url\":\"http://localhost:3000\"}],\"paths\":{\"/craftsmen\":{\"get\":{\"summary\":\"Retrieves a list of craftsmen based on postal code\",\"parameters\":[{\"in\":\"query\",\"name\":\"postalcode\",\"schema\":{\"type\":\"string\"},\"required\":true,\"description\":\"Postal code to filter craftsmen\"}],\"responses\":{\"200\":{\"description\":\"List of craftsmen\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Response\"}}}}}}},\"/craftman/{craftman_id}\":{\"patch\":{\"summary\":\"Updates a craftsman's profile information\",\"parameters\":[{\"in\":\"path\",\"name\":\"craftman_id\",\"schema\":{\"type\":\"integer\"},\"required\":true,\"description\":\"Unique ID of the craftsman\"}],\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/PatchRequest\"}}}},\"responses\":{\"200\":{\"description\":\"Craftsman updated successfully\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/PatchResponse\"}}}}}}}},\"components\":{\"schemas\":{\"Craftsman\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"rankingScore\":{\"type\":\"number\"},\"minimum\":{\"type\":\"number\",\"nullable\":true},\"maximum\":{\"type\":\"number\",\"nullable\":true}}},\"Response\":{\"type\":\"object\",\"properties\":{\"craftsmen\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/Craftsman\"}}}},\"PatchRequest\":{\"type\":\"object\",\"properties\":{\"maxDrivingDistance\":{\"type\":\"number\",\"nullable\":true},\"profilePictureScore\":{\"type\":\"number\",\"nullable\":true},\"profileDescriptionScore\":{\"type\":\"number\",\"nullable\":true}}},\"PatchResponse\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"updated\":{\"type\":\"object\",\"properties\":{\"maxDrivingDistance\":{\"type\":\"number\"},\"profilePictureScore\":{\"type\":\"number\"},\"profileDescriptionScore\":{\"type\":\"number\"}}}}}}}}";
-        // Set the response code and body with the JSON data
+        res.body = "{\"openapi\":\"3.0.0\",\"info\":{\"title\":\"Craftsmen Service API\",\"version\":\"1.0.0\"},\"servers\":[{\"url\":\"http://localhost:3000\"}],\"paths\":{\"/craftsmen\":{\"get\":{\"summary\":\"Retrieves a list of craftsmen based on postal code\",\"parameters\":[{\"in\":\"query\",\"name\":\"postalcode\",\"schema\":{\"type\":\"string\"},\"required\":true,\"description\":\"Postal code to filter craftsmen\"},{\"in\":\"query\",\"name\":\"maximum\",\"schema\":{\"type\":\"number\",\"required\":false,\"description\":\"Maximum craftsmen to attach to response\"}}],\"responses\":{\"200\":{\"description\":\"List of craftsmen\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/Response\"}}}}}}},\"/craftman/{craftman_id}\":{\"patch\":{\"summary\":\"Updates a craftsman's profile information\",\"parameters\":[{\"in\":\"path\",\"name\":\"craftman_id\",\"schema\":{\"type\":\"integer\"},\"required\":true,\"description\":\"Unique ID of the craftsman\"}],\"requestBody\":{\"required\":true,\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/PatchRequest\"}}}},\"responses\":{\"200\":{\"description\":\"Craftsman updated successfully\",\"content\":{\"application/json\":{\"schema\":{\"$ref\":\"#/components/schemas/PatchResponse\"}}}}}}}},\"components\":{\"schemas\":{\"Craftsman\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"rankingScore\":{\"type\":\"number\"}}},\"Response\":{\"type\":\"object\",\"properties\":{\"craftsmen\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/components/schemas/Craftsman\"}}}},\"PatchRequest\":{\"type\":\"object\",\"properties\":{\"maxDrivingDistance\":{\"type\":\"number\",\"nullable\":true},\"profilePictureScore\":{\"type\":\"number\",\"nullable\":true},\"profileDescriptionScore\":{\"type\":\"number\",\"nullable\":true}}},\"PatchResponse\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"updated\":{\"type\":\"object\",\"properties\":{\"maxDrivingDistance\":{\"type\":\"number\"},\"profilePictureScore\":{\"type\":\"number\"},\"profileDescriptionScore\":{\"type\":\"number\"}}}}}}}}";
         res.code = 200;
         res.end();
     } catch (const std::exception &e) {

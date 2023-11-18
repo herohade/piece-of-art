@@ -7,7 +7,5 @@ export type Craftsman = {
     id?: number;
     name?: string;
     rankingScore?: number;
-    minimum?: number | null;
-    maximum?: number | null;
 };
 

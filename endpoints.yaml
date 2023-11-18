@@ -15,6 +15,12 @@ paths:
             type: string
           required: true
           description: Postal code to filter craftsmen
+        - in: query
+          name: maximum
+          schema:
+            type: number
+            required: false
+            description: Maximum craftsmen to attach to response
       responses:
         '200':
           description: List of craftsmen
@@ -58,12 +64,6 @@ components:
           type: string
         rankingScore:
           type: number
-        minimum:
-          type: number
-          nullable: true
-        maximum:
-          type: number
-          nullable: true
 
     Response:
       type: object

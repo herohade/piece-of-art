@@ -20,7 +20,7 @@ WORKDIR /backend
 # Install crow and nlohmann/json for C++
 RUN apt-get update && \
     apt-get install -y cmake && \
-    apt-get install -y libboost-filesystem-dev libboost-system-dev && \
+    apt-get install -y libboost-cpp-dev && \
     git clone --depth=1 https://github.com/ipkn/crow.git && \
     cd crow && mkdir build && cd build && \
     cmake .. && make && make install && \

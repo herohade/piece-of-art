@@ -15,17 +15,20 @@ export class DefaultService {
     /**
      * Retrieves a list of craftsmen based on postal code
      * @param postalcode Postal code to filter craftsmen
+     * @param maximum
      * @returns Response List of craftsmen
      * @throws ApiError
      */
     public static getCraftsmen(
         postalcode: string,
+        maximum?: number,
     ): CancelablePromise<Response> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/craftsmen',
             query: {
                 'postalcode': postalcode,
+                'maximum': maximum,
             },
         });
     }

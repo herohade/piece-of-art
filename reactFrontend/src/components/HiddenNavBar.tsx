@@ -29,13 +29,13 @@ function HiddenNavBar({ hidden }: Props) {
         <div className="hiddenHeaderNavigation">
           <nav>
             <ul>
-              <li className="navList">
+              <li className="navListTop">
                 <Link to={"/"}>Home</Link>
               </li>
-              <li className="navList">
+              <li className="navListTop">
                 <Link to={"/craftsmen/search"}>Find Craftsmen</Link>
               </li>
-              <li className="navList">
+              <li className="navListTop">
                 <Link to={"/craftsmen/update"}>Update Craftsmen</Link>
               </li>
             </ul>

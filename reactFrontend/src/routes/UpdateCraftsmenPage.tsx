@@ -1,52 +1,26 @@
-import { Form, useParams } from "react-router-dom";
-import Craftman from "../components/Craftman";
+import { Form, useLocation, useParams } from "react-router-dom";
 import Page from "../components/Page";
 
 // Page for searching craftsmen by postcode
 function UpdateCraftsmenPage() {
   // get id from url: /craftsmen/update/:id
   const { id } = useParams();
+  
+  const {search} = useLocation();
+  const params = new URLSearchParams(search);
+  const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } = Object.fromEntries(params);
 
-  const craftsmanPlaceholder = [
-    {
-      id: 1,
-      name: "Max Mustermann",
-      rankingScore: 100,
-    },
-    {
-      id: 2,
-      name: "Frieda Musterfrau",
-      rankingScore: 100,
-    },
-    {
-      id: 3,
-      name: "Anton Mustermann",
-      rankingScore: 100,
-    },
-    {
-      id: 4,
-      name: "Lena Musterfrau",
-      rankingScore: 100,
-    },
-    {
-      id: 5,
-      name: "Sebastian Mustermann",
-      rankingScore: 100,
-    },
-  ];
+  if (maxDrivingDistance) {
+    alert("Max driving distance updated to " + maxDrivingDistance);
+  } else if (profilePictureScore) {
+    alert("Profile picture score updated to " + profilePictureScore);
+  } else if (profileDescriptionScore) {
+    alert("Profile description score updated to " + profileDescriptionScore);
+  }
 
-  const craftsman = craftsmanPlaceholder.find(
-    (craftsman) => craftsman.id === Number(id)
-  );
-
-  const content = craftsman ? (
+  const content = id ? (
     <>
       <h1>Update Craftsman {id}</h1>
-      <Craftman
-        id={craftsman.id}
-        name={craftsman.name}
-        rankingScore={craftsman.rankingScore}
-      />
       {/* MAX_DRIVING_DISTANCE */}
       <Form method="post" id="max-driving-distance-form">
         <label>

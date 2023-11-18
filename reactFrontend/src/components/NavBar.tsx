@@ -8,13 +8,13 @@ function NavBar() {
       <footer className="footer">
         <nav>
           <ul>
-            <li className="navList">
+            <li className="navListBottom">
               <Link to={"/"}>Home</Link>
             </li>
-            <li className="navList">
+            <li className="navListBottom">
               <Link to={"/craftsmen/search"}>Find Craftsmen</Link>
             </li>
-            <li className="navList">
+            <li className="navListBottom">
               <Link to={"/craftsmen/update"}>Update Craftsmen</Link>
             </li>
           </ul>

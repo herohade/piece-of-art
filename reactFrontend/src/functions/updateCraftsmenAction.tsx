@@ -1,28 +1,54 @@
 import { redirect } from "react-router-dom";
+import { patchCraftmanProfile } from "./openApiWrapper";
 
-export async function updateCraftsmenAction({ request }: { request: Request }) {
+export async function updateCraftsmenAction({
+  params,
+  request,
+}: {
+  params: { id?: number };
+  request: Request;
+}) {
+  const { id } = params;
+  if (!id) {
+    if (import.meta.env.DEV) {
+      console.log("undefined id");
+    }
+    return null;
+  }
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
   const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } =
     updates;
-  if (maxDrivingDistance) {
-    if (import.meta.env.DEV) {
-      console.log("maxDrivingDistance", maxDrivingDistance);
-    }
-    // TODO: update maxDrivingDistance and display success/failure message
+  const response = await patchCraftmanProfile(
+    id,
+    maxDrivingDistance ? Number(maxDrivingDistance.valueOf()) : null,
+    profilePictureScore ? Number(profilePictureScore.valueOf()) : null,
+    profileDescriptionScore ? Number(profileDescriptionScore.valueOf()) : null
+  );
+
+  if (response === undefined) {
+    return null;
   }
-  if (profilePictureScore) {
-    if (import.meta.env.DEV) {
-      console.log("profilePictureScore", profilePictureScore);
-    }
-    // TODO: update profilePictureScore and display success/failure message
+
+  const { updated } = response;
+  if (!updated) {
+    return null;
   }
-  if (profileDescriptionScore) {
-    if (import.meta.env.DEV) {
-      console.log("profileDescriptionScore", profileDescriptionScore);
-    }
-    // TODO: update profileDescriptionScore and display success/failure message
-  }
-  const urlPath = new URL(request.url).pathname;
+
+  const {
+    maxDrivingDistance: maxDrivingDistanceUpdated,
+    profilePictureScore: profilePictureScoreUpdated,
+    profileDescriptionScore: profileDescriptionScoreUpdated,
+  } = updated;
+
+  const urlPath = new URL(
+    "/craftsmen/update/" + id + maxDrivingDistanceUpdated
+      ? "?maxDrivingDistance=" + maxDrivingDistanceUpdated
+      : "" + profilePictureScoreUpdated
+      ? "?profilePictureScore=" + profilePictureScoreUpdated
+      : "" + profileDescriptionScoreUpdated
+      ? "?profileDescriptionScore=" + profileDescriptionScoreUpdated
+      : ""
+  ).pathname;
   return redirect(urlPath);
 }

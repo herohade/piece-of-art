@@ -30,6 +30,10 @@ function RankedCraftsmenPage() {
     );
   }, [postcode]);
 
+  // const {search} = useLocation();
+  // const params = new URLSearchParams(search);
+  // const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } = Object.fromEntries(params);
+
   const content = (
     <>
       <h1>Ranked craftsmen for postcode {postcode}</h1>
@@ -45,6 +49,9 @@ function RankedCraftsmenPage() {
             </li>
           ))}
       </ul>
+      <button>
+        Load More
+      </button>
     </>
   );
   return <Page content={content} />;

@@ -18,9 +18,13 @@ export const patchCraftmanProfile = async (
   profilePictureScore: number | null,
   profileDescriptionScore: number | null
 ) => {
-  return await patchCraftman(craftmanId, {
-    maxDrivingDistance,
-    profilePictureScore,
-    profileDescriptionScore,
-  });
+  try {
+    return await patchCraftman(craftmanId, {
+      maxDrivingDistance,
+      profilePictureScore,
+      profileDescriptionScore,
+    });
+  } catch (error) {
+    console.error(error);
+  }
 };

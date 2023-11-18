@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++20 -Wall -O2
+CXXFLAGS = -std=c++20 -Wall -Wno-unknown-pragmas -O3
 SRC_DIR = ./src
 BUILD_DIR = build
 EXECUTABLE = main

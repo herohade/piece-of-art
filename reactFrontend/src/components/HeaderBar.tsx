@@ -1,38 +1,25 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import "../css/NavBar.css";
-import NavBar from "./NavBar";
+import HiddenNavBar from "./HiddenNavBar";
 
 // Navigation bar at the bottom of the page
 function HeaderBar() {
-  let hiddenNav = true;
+  const [hiddenNav, setHiddenNav] = useState(true);
   return (
     <>
       <header>
         <div className="headerTop">
           <div className="headerLogo"></div>
-          <button onClick={() => (hiddenNav = !hiddenNav)}>
-            <div className="headerNavigation">
-              {hiddenNav ? (
-                <svg viewBox="0 0 24 19">
-                  {" "}
-                  <path
-                    fill="#ffffff"
-                    d="M24,17.5c0,0.8-0.7,1.5-1.6,1.5l-9.6,0H1.6C0.7,19,0,18.3,0,17.5v-0.1C0,16.7,0.7,16,1.6,16h20.7C23.3,16,24,16.6,24,17.5L24,17.5z"
-                  ></path>{" "}
-                  <path
-                    fill="#ffffff"
-                    d="M24,9.5c0,0.8-0.7,1.5-1.6,1.5H1.6C0.7,11,0,10.3,0,9.5V9.5C0,8.7,0.7,8,1.6,8h20.7C23.3,8,24,8.7,24,9.5L24,9.5z"
-                  ></path>{" "}
-                  <path
-                    fill="#ffffff"
-                    d="M24,1.5C24,2.3,23.3,3,22.4,3H1.6C0.7,3,0,2.4,0,1.6V1.5C0,0.7,0.7,0,1.6,0l9.6,0h11.1C23.3,0,24,0.7,24,1.5L24,1.5z"
-                  ></path>{" "}
-                </svg>
-              ) : (
-                <NavBar />
-              )}
-            </div>
-          </button>
+          <div className="headerNavigation">
+            <HiddenNavBar hidden={hiddenNav} />
+            <button
+              className="headerNavButton"
+              onClick={() => {
+                setHiddenNav(!hiddenNav);
+                console.log(hiddenNav);
+              }}
+            ></button>
+          </div>
         </div>
       </header>
     </>

@@ -5,7 +5,7 @@ import "../css/NavBar.css";
 function NavBar() {
   return (
     <>
-      <footer>
+      <footer className="footer">
         <nav>
           <ul>
             <li className="navList">

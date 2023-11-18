@@ -1,8 +1,10 @@
 #include "../include/craftsman.h"
-#include <art.hpp>
+#include <../include/art.hpp>
+#include <../include/crow_all.h>
+#include <iostream>
 
 int main() {
-    // Create an instance of the tree with MyData as the value type
+    /*// Create an instance of the tree with MyData as the value type
     art::art<std::array<Craftsman, 3>> m;  // Example with an array of size 3
 
     // Set a key-value pair in the tree
@@ -20,6 +22,22 @@ int main() {
 
     // Delete the key from the tree
     m.del("k");
+
+    return 0;*/
+    // main.cpp
+
+    crow::SimpleApp app;
+
+    CROW_ROUTE(app, "/hello")
+            .methods("GET"_method)
+                    ([]() {
+                        // Your implementation here
+                        crow::json::wvalue response;
+                        response["message"] = "Hello, World!";
+                        return crow::response(response);
+                    });
+
+    app.port(3000).run();
 
     return 0;
 }

@@ -13,6 +13,7 @@
 #include "../../include/craftsman.h"
 #include "../include/json.hpp"
 #include "../../adaptive-radix-tree/include/art.hpp"
+using namespace std;
 
 const double defaultDistance = 80000;
 const double EARTH_RADIUS = 6371.0;

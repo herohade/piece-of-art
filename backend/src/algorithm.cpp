@@ -1,77 +1,26 @@
-#include "algorithm.h"
 
+#include <unordered_map>
+#include <vector>
+#include <string>
+#include "../include/craftsman.h"  
 #include "../include/json.hpp"
+#include <iostream>
 
 using namespace std;
 using json = nlohmann::json;
 
 
+
 const double defaultDistance = 80000;
 const double EARTH_RADIUS = 6371.0;
 
-//  Returns a map of postcodes from a json file
-unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
-    ifstream file(filename);
-
-    if (!file.is_open()) {
-        cerr << "Error opening file!" << endl;
-        return {};
-    }
-
-    json data;
-    file >> data;
-    file.close();
-
-    unordered_map<string, PostcodeInfo> postcodeMap;
-
-    for (const auto& entry : data) {
-        PostcodeInfo info;
-        info.lon = entry["lon"];
-        info.lat = entry["lat"];
-        info.extension_group = entry["postcode_extension_distance_group"];
-        postcodeMap[entry["postcode"]] = info;
-    }
-    return postcodeMap;
-}
+struct PostcodeInfo {
+    double lon;
+    double lat;
+    std::string extension_group;
+};
 
 
-// Returns a map of craftsmans from service craftsman and quality factor files
-unordered_map<int, Craftsman> readCraftsmen(string profile_filename, string score_filename) {
-    ifstream file(profile_filename);
-    if (!file.is_open()) {
-        cerr << "Error opening file!" << endl;
-        return {};
-    }
-
-    json data;
-    file >> data;
-    file.close();
-
-    unordered_map<int, Craftsman> craftmansMap;
-
-    for (const auto& entry : data) {
-        Craftsman craftsman = Craftsman(entry["id"], entry["first_name"], entry["last_name"], entry["city"], entry["street"], entry["house_number"],
-                            entry["lon"], entry["lat"], entry["max_driving_distance"], 0.0, 0.0);
-        craftmansMap.insert({entry["id"], craftsman});
-    }
-
-    ifstream scoreFile(score_filename);
-
-    if (!scoreFile.is_open()) {
-        cerr << "Error opening file!" << endl;
-        return {};
-    }
-
-    scoreFile >> data;
-    scoreFile.close();
-
-    for (const auto& entry : data) {
-        craftmansMap[entry["profile_id"]].setProfilePictureScore(entry["profile_picture_score"]);
-        craftmansMap[entry["profile_id"]].setProfileDescriptionScore(entry["profile_description_score"]);
-    }
-
-    return craftmansMap;
-}
 
 // Calculates distance in meters between two coordinates
 double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -144,17 +93,4 @@ unordered_map<string, vector<pair<Craftsman, double>>> getAllRankings(unordered_
     }
 
     return sortedcraftsmans;
-}
-
-void add_path(art::art<std::vector<pair<Craftsman, double>>> tree, string postcode, vector<pair<Craftsman, double>> craftsmen) {
-    tree.set(postcode.c_str(), craftsmen);
-}
-
-
-art::art<std::vector<std::pair<Craftsman, double>>> fill_the_tree(int n, unordered_map<std::string, PostcodeInfo>& postcodes, std::unordered_map<int, Craftsman>& all_craftsmen) {
-    art::art<std::vector<pair<Craftsman, double>>> tree;
-    for (const auto& postcode : postcodes) {
-        vector<pair<Craftsman, double>> craftsmen = getTopNRankedCraftsmans(postcode.first, postcodes, all_craftsmen, n);
-        tree.set(postcode.first.c_str(), craftsmen);
-    }
 }

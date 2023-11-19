@@ -92,7 +92,7 @@ void updateCraftsman(crow::response &res, const crow::request &req, int craftsma
         craftsman = craftsmenData[1];
     }
     // Check if at least one attribute is defined in the request
-    if ((!jsonRequest["maxDrivingDistance"] || jsonRequest["maxDrivingDistance"].t()git  == crow::json::type::Null) &&
+    if ((!jsonRequest["maxDrivingDistance"] || jsonRequest["maxDrivingDistance"].t()  == crow::json::type::Null) &&
             (!jsonRequest["profilePictureScore"] || jsonRequest["profilePictureScore"].t() == crow::json::type::Null) &&
             (!jsonRequest["profileDescriptionScore"] || jsonRequest["profileDescriptionScore"].t() == crow::json::type::Null)) {
         res.code = 400; // Bad Request:

@@ -7,7 +7,7 @@ import { RefObject } from "react";
 // The root of the website
 // TODO: pretty up
 function Root() {
-  const dvdScreensaver = useDvdScreensaver({ speed: 5 });
+  const dvdScreensaver = useDvdScreensaver({ speed: 3 });
 
   const content = (
     <div className="contentBody">

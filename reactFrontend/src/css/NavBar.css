@@ -1,3 +1,7 @@
-.navList {
+.navListTop {
+  list-style: none;
+  margin-bottom: 7px;
+}
+.navListBottom {
   list-style: none;
 }

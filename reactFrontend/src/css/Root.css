@@ -56,6 +56,16 @@
   transform: translateX(-65%) translateY(-15%);
 }
 .hiddenHeaderNavigation ul {
+  padding-left: 0px;
+  border-bottom-width: 3px;
+  border-bottom-style: solid;
+  border-bottom-color: white;
+  background: #06254d;
+  width: 138%;
+  margin-left: -45px;
+  padding-top: 10px;
+  margin-top: 21px;
+  padding-bottom: 12px;
   padding-left: 0;
 }
 .headerNavButton {

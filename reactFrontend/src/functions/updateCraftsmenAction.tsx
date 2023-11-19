@@ -1,4 +1,3 @@
-import { redirect } from "react-router-dom";
 import { patchCraftmanProfile } from "./openApiWrapper";
 
 export async function updateCraftsmenAction({
@@ -48,13 +47,15 @@ export async function updateCraftsmenAction({
     profileDescriptionScore: profileDescriptionScoreUpdated,
   } = updated;
 
-  const urlPath =
-    "/update/" + id + maxDrivingDistanceUpdated
-      ? "?maxDrivingDistance=" + maxDrivingDistanceUpdated
-      : "" + profilePictureScoreUpdated
-      ? "?profilePictureScore=" + profilePictureScoreUpdated
-      : "" + profileDescriptionScoreUpdated
-      ? "?profileDescriptionScore=" + profileDescriptionScoreUpdated
-      : "";
-  return redirect(urlPath);
+  if (maxDrivingDistanceUpdated) {
+    alert("Max driving distance updated to " + maxDrivingDistanceUpdated);
+  } else if (profilePictureScoreUpdated) {
+    alert("Profile picture score updated to " + profilePictureScoreUpdated);
+  } else if (profileDescriptionScoreUpdated) {
+    alert(
+      "Profile description score updated to " + profileDescriptionScoreUpdated
+    );
+  }
+
+  return null;
 }

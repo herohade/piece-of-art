@@ -129,7 +129,8 @@ double calculateRank(double distance, const ServiceProvider& provider) {
 }
 
 // Returns a sorted vector of service providers according to their ranks
-vector<pair<ServiceProvider, double>> getTopRankedProviders(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, const unordered_map<int, ServiceProvider>& all_providers) {
+vector<pair<ServiceProvider, double>> getTopNRankedProviders(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, 
+                                    const unordered_map<int, ServiceProvider>& all_providers, int n) {
     auto it = postcodes.find(customerPostcode);
     if (it == postcodes.end()) return {};
     PostcodeInfo info = it->second;
@@ -143,35 +144,40 @@ vector<pair<ServiceProvider, double>> getTopRankedProviders(string customerPostc
 
     vector<pair<ServiceProvider, double>> providers;
 
+    short cnt6 = 0;
+    short cnt5 = 0;
+    short cnt4 = 0;
+    
     for (const auto& provider : all_providers) {
         const ServiceProvider& curr = provider.second;
+        
+        if (cnt4 >= n && (curr.profile_description_score + curr.profile_picture_score < 4)) continue;
+        if (cnt5 >= n && (curr.profile_description_score + curr.profile_picture_score < 5)) continue;
+        if (cnt6 >= n && (curr.profile_description_score + curr.profile_picture_score < 6)) continue;
+        
         double distance = calculateDistance(curr.lat, curr.lon, info.lat, info.lon);
+        
         if (distance <= curr.max_driving_distance + delta_distance) {
+            if (cnt6 < n && (curr.profile_description_score + curr.profile_picture_score >= 6)) cnt6++;
+            if (cnt5 < n && (curr.profile_description_score + curr.profile_picture_score >= 5)) cnt5++;
+            if (cnt4 < n && (curr.profile_description_score + curr.profile_picture_score >= 4)) cnt4++;            
             providers.push_back({curr, calculateRank(distance, curr)});
         }
     }
 
-
     sort(providers.begin(), providers.end(), [](const auto& a, const auto& b) {
         return a.second > b.second; 
     });
-
- /*   vector<ServiceProvider> sortedProviders;
-    for (const auto& pair : providers) {
-        sortedProviders.push_back(pair.first);
-    }
-
-    return sortedProviders;
-*/
+    
     return providers;
 }
 
-// Returns a mapping of each postcode to all the available providers with their rank
+// Returns a mapping of each postcode to the available providers with their rank
 unordered_map<string, vector<pair<ServiceProvider, double>>> getAllRankings(unordered_map<string, PostcodeInfo>& postcodes, unordered_map<int, ServiceProvider>& providers) {
     unordered_map<string, vector<pair<ServiceProvider, double>>> sortedProviders;
     
     for (auto it = postcodes.begin(); it != postcodes.end(); it++) {
-        sortedProviders.insert({it->first, getTopRankedProviders(it->first, postcodes, providers)});
+        sortedProviders.insert({it->first, getTopNRankedProviders(it->first, postcodes, providers, 20)});
     }
 
     return sortedProviders;
@@ -184,13 +190,6 @@ int main() {
 
     string postcode;
     cin >> postcode;
-
-    vector<pair<ServiceProvider, double>> lol = getTopRankedProviders(postcode, postcodes, all_providers);
-
-
-    for (int i = 0; i < 20; i++) {
-        cout << lol[i].first.id << " " << lol[i].second << "\n";
-    }
 
     auto start = chrono::high_resolution_clock::now();
     unordered_map<string, vector<pair<ServiceProvider, double>>> ans = getAllRankings(postcodes, all_providers);

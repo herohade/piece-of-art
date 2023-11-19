@@ -3,12 +3,14 @@
 #include <vector>
 #include "../include/craftsman.h"
 #include "../algorithm/include/json.hpp"
+#include "../algorithm/src/algorithm.h"
 #include <string>
 #include <algorithm>
 
 
 // In-memory data store
 std::vector<Craftsman> craftsmenData;
+art::art<std::vector<std::pair<Craftsman, double>>> art_tree;
 // Function to retrieve craftsmen based on postal code
 void getCraftsmen(crow::response &res, const crow::request &req) {
     // Extract postal code from query parameter
@@ -24,22 +26,16 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
 
     // Perform your logic to filter craftsmen based on postal code
     // For simplicity, just return all craftsmen here
-    std::vector<Craftsman> matchingCraftsmen;
-    // Assuming craftsmenData is a vector of Craftsman objects
-    for (const auto &craftsman : craftsmenData) {
-        if (craftsman.getPostalcode() == postalCode) {
-            matchingCraftsmen.push_back(craftsman);
-        }
-    }
+    std::vector<std::pair<Craftsman, double>> matchingCraftsmen = art_tree.get(postalCode);
     nlohmann::json response;
     response["craftsmen"] = nlohmann::json::array();
     // Check if any craftsmen were found
     if (!matchingCraftsmen.empty()) {
         for (const auto &craftsman : matchingCraftsmen) {
             nlohmann::json craftsmanObject;
-            craftsmanObject["id"] = craftsman.getId();
-            craftsmanObject["name"] = std::string(craftsman.getFirstName()) + " " + std::string(craftsman.getLastName());
-            craftsmanObject["rankingScore"] = craftsman.getRank();
+            craftsmanObject["id"] = craftsman.first.getId();
+            craftsmanObject["name"] = std::string(craftsman.first.getFirstName()) + " " + std::string(craftsman.first.getLastName());
+            craftsmanObject["rankingScore"] = craftsman.second;
             response["craftsmen"].push_back(craftsmanObject);
         }
     } else {
@@ -148,10 +144,9 @@ void getEndpoints(crow::response &res) {
 }
 
 int main() {
-    craftsmenData.push_back(Craftsman(1, "John", "Smith", 74, "81927", "", "","",1.0,1.0,30,1.0,1.0));
-    craftsmenData.push_back(Craftsman(2, "Jane", "Long", 85, "81927", "", "","",1.0,1.0,30,1.0,1.0));
-    craftsmenData.push_back(Craftsman(3, "Andriy", "Manucharyan", 100, "10230", "","","",1.0,1.0,30,1.0,1.0));
-    craftsmenData.push_back(Craftsman(4, "David", "Eroglu", 2, "54203", "","","",1.0,1.0,30,1.0,1.0));
+    std::unordered_map<int, Craftsman> craftsmenData = readCraftsmen("data/service_provider_profile.json", "data/quality_factor_score.json");
+    std::unordered_map<std::string, PostcodeInfo> postcodeData = readPostcodes("data/postcode.json");
+    art::art<std::vector<std::pair<Craftsman, double>>> art_tree = fill_the_tree(20, postcodeData, craftsmenData);
     // Define route for retrieving craftsmen
     crow::SimpleApp app;
 

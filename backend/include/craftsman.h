@@ -12,8 +12,6 @@ public:
             : id_(0),
               firstname_(""),
               lastname_(""),
-              rank_(0),
-              postalcode_(""),
               city_(""),
               street_(""),
               house_number_(""),
@@ -27,8 +25,6 @@ public:
     Craftsman(int id,
               const std::string& firstname,
               const std::string& lastname,
-              int rank,
-              const std::string& postalcode,
               const std::string& city,
               const std::string& street,
               const std::string& house_number,
@@ -40,8 +36,6 @@ public:
             : id_(id),
               firstname_(firstname),
               lastname_(lastname),
-              rank_(rank),
-              postalcode_(postalcode),
               city_(city),
               street_(street),
               house_number_(house_number),
@@ -79,26 +73,6 @@ public:
     // Setter for last name
     void setLastName(const std::string& lastname) {
         lastname_ = lastname;
-    }
-
-    // Getter for rank
-    int getRank() const {
-        return rank_;
-    }
-
-    // Setter for rank
-    void setRank(int rank) {
-        rank_ = rank;
-    }
-
-    // Getter for postalcode
-    const std::string& getPostalcode() const {
-        return postalcode_;
-    }
-
-    // Setter for postalcode
-    void setPostalcode(const std::string& postalcode) {
-        postalcode_ = postalcode;
     }
 
     // Getter for city

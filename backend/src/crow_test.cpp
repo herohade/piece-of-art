@@ -170,12 +170,28 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
         res.end();
         return;
     }
-
+    nlohmann::json response;
+    std::vector<std::pair<Craftsman, double>> matchingCraftsmen;
+    response["craftsmen"] = nlohmann::json::array();
+    if (req.url_params.get("maximum") != nullptr) {
+        int limit = std::stoi(req.url_params.get("maximum"));
+        if (limit <= 20) matchingCraftsmen = art_tree.get(postalCode);
+        else {
+            art_tree = fill_the_tree(limit, postcodeData, craftsmenData);
+        }
+        nlohmann::json newResponse;
+        newResponse["craftsmen"] = nlohmann::json::array();
+        limit = fmin(limit, response["craftsmen"].size());
+        for (int i = 0; i < limit; ++i) {
+            newResponse["craftsmen"][i] = response["craftsmen"][i];
+        }
+        res.body = newResponse.dump();
+    }
+    else {
+        res.body = response.dump();
+    }
     // Perform your logic to filter craftsmen based on postal code
     // For simplicity, just return all craftsmen here
-    std::vector<std::pair<Craftsman, double>> matchingCraftsmen = art_tree.get(postalCode);
-    nlohmann::json response;
-    response["craftsmen"] = nlohmann::json::array();
     // Check if any craftsmen were found
     if (!matchingCraftsmen.empty()) {
         for (const auto &craftsman : matchingCraftsmen) {
@@ -191,19 +207,6 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
         res.body = response.dump();
         res.code = 400;
         res.end();
-    }
-    if (req.url_params.get("maximum") != nullptr) {
-        int limit = std::stoi(req.url_params.get("maximum"));
-        nlohmann::json newResponse;
-        newResponse["craftsmen"] = nlohmann::json::array();
-        limit = fmin(limit, response["craftsmen"].size());
-        for (int i = 0; i < limit; ++i) {
-            newResponse["craftsmen"][i] = response["craftsmen"][i];
-        }
-        res.body = newResponse.dump();
-    }
-    else {
-        res.body = response.dump();
     }
     res.code = 200;
     res.add_header("Content-Type", "application/json");

@@ -187,10 +187,10 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
         }
     } else {
         // No craftsmen found
-        response["error"] = "No craftsmen found for the provided postal code.";
         res.body = response.dump();
-        res.code = 400;
+        res.code = 200;
         res.end();
+        return;
     }
     if (req.url_params.get("maximum") != nullptr) {
         int limit = std::stoi(req.url_params.get("maximum"));

@@ -24,7 +24,8 @@ RUN apt-get update -y && \
 COPY . .
 
 # Build your C++ application
-RUN mkdir build && \
+RUN rm -rf build && \
+    mkdir build && \
     cd build && \
     cmake .. && \
     # cd adaptive-radix-tree && \

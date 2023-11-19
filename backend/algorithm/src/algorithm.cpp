@@ -30,6 +30,8 @@ struct ServiceProvider {
 struct PostcodeInfo {
     double lon;
     double lat;
+    string created_at;
+    string updated_at;
     string extension_group;
 };
 
@@ -52,6 +54,8 @@ unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
         PostcodeInfo info;
         info.lon = entry["lon"];
         info.lat = entry["lat"];
+        info.created_at = entry["created_at"];
+        info.updated_at = entry["updated_at"];
         info.extension_group = entry["postcode_extension_distance_group"];
         postcodeMap[entry["postcode"]] = info;
     }
@@ -115,7 +119,7 @@ double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     return 1000 * acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2)) * EARTH_RADIUS;
 }
 
-// Calculates the rank of a provider given a certain distance from the post code
+// Calculates the rank of a provider given the certain distance from the post code
 double calculateRank(double distance, const ServiceProvider& provider) {
     double distanceScore = 1.0 - (distance / defaultDistance);
     double distanceWeight = (distance > defaultDistance) ? 0.01 : 0.15;
@@ -124,8 +128,8 @@ double calculateRank(double distance, const ServiceProvider& provider) {
     return distanceWeight * distanceScore + (1 - distanceWeight) * profileScore;
 }
 
-// Returns a sorted vector of service providers according to their rank
-vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, const unordered_map<int, ServiceProvider>& all_providers) {
+// Returns a sorted vector of service providers according to their ranks
+vector<pair<ServiceProvider, double>> getTopRankedProviders(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, const unordered_map<int, ServiceProvider>& all_providers) {
     auto it = postcodes.find(customerPostcode);
     if (it == postcodes.end()) return {};
     PostcodeInfo info = it->second;
@@ -143,7 +147,7 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
         const ServiceProvider& curr = provider.second;
         double distance = calculateDistance(curr.lat, curr.lon, info.lat, info.lon);
         if (distance <= curr.max_driving_distance + delta_distance) {
-            providers.push_back(make_pair(curr, calculateRank(distance, curr)));
+            providers.push_back({curr, calculateRank(distance, curr)});
         }
     }
 
@@ -152,16 +156,19 @@ vector<ServiceProvider> getTopRankedProviders(string customerPostcode, const uno
         return a.second > b.second; 
     });
 
-    vector<ServiceProvider> sortedProviders;
+ /*   vector<ServiceProvider> sortedProviders;
     for (const auto& pair : providers) {
         sortedProviders.push_back(pair.first);
     }
 
     return sortedProviders;
+*/
+    return providers;
 }
 
-unordered_map<string, vector<ServiceProvider>> getAllRankings(unordered_map<string, PostcodeInfo>& postcodes, unordered_map<int, ServiceProvider>& providers) {
-    unordered_map<string, vector<ServiceProvider>> sortedProviders;
+// Returns a mapping of each postcode to all the available providers with their rank
+unordered_map<string, vector<pair<ServiceProvider, double>>> getAllRankings(unordered_map<string, PostcodeInfo>& postcodes, unordered_map<int, ServiceProvider>& providers) {
+    unordered_map<string, vector<pair<ServiceProvider, double>>> sortedProviders;
     
     for (auto it = postcodes.begin(); it != postcodes.end(); it++) {
         sortedProviders.insert({it->first, getTopRankedProviders(it->first, postcodes, providers)});
@@ -178,8 +185,15 @@ int main() {
     string postcode;
     cin >> postcode;
 
+    vector<pair<ServiceProvider, double>> lol = getTopRankedProviders(postcode, postcodes, all_providers);
+
+
+    for (int i = 0; i < 20; i++) {
+        cout << lol[i].first.id << " " << lol[i].second << "\n";
+    }
+
     auto start = chrono::high_resolution_clock::now();
-    unordered_map<string, vector<ServiceProvider>> ans = getAllRankings(postcodes, all_providers);
+    unordered_map<string, vector<pair<ServiceProvider, double>>> ans = getAllRankings(postcodes, all_providers);
 
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();

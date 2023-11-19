@@ -1,4 +1,3 @@
-import { redirect } from "react-router-dom";
 import { patchCraftmanProfile } from "./openApiWrapper";
 
 export async function updateCraftsmenAction({
@@ -19,15 +18,11 @@ export async function updateCraftsmenAction({
   const updates = Object.fromEntries(formData);
   const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } =
     updates;
-  if (
-    !maxDrivingDistance &&
-    !profilePictureScore &&
-    !profileDescriptionScore
-  ) {
+  if (!maxDrivingDistance && !profilePictureScore && !profileDescriptionScore) {
     if (import.meta.env.DEV) {
       console.log("undefined updates");
     }
-    alert("Please fill out at least one field")
+    alert("Please fill out at least one field");
     return null;
   }
   const response = await patchCraftmanProfile(
@@ -52,14 +47,15 @@ export async function updateCraftsmenAction({
     profileDescriptionScore: profileDescriptionScoreUpdated,
   } = updated;
 
-  const urlPath = new URL(
-    "/update/" + id + maxDrivingDistanceUpdated
-      ? "?maxDrivingDistance=" + maxDrivingDistanceUpdated
-      : "" + profilePictureScoreUpdated
-      ? "?profilePictureScore=" + profilePictureScoreUpdated
-      : "" + profileDescriptionScoreUpdated
-      ? "?profileDescriptionScore=" + profileDescriptionScoreUpdated
-      : ""
-  ).pathname;
-  return redirect(urlPath);
+  if (maxDrivingDistanceUpdated) {
+    alert("Max driving distance updated to " + maxDrivingDistanceUpdated);
+  } else if (profilePictureScoreUpdated) {
+    alert("Profile picture score updated to " + profilePictureScoreUpdated);
+  } else if (profileDescriptionScoreUpdated) {
+    alert(
+      "Profile description score updated to " + profileDescriptionScoreUpdated
+    );
+  }
+
+  return null;
 }

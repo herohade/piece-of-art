@@ -1,23 +1,10 @@
-import { Form, useLocation, useParams } from "react-router-dom";
+import { Form, useParams } from "react-router-dom";
 import Page from "../components/Page";
 
 // Page for searching craftsmen by postcode
 function UpdateCraftsmenPage() {
   // get id from url: /update/:id
   const { id } = useParams();
-
-  const { search } = useLocation();
-  const params = new URLSearchParams(search);
-  const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } =
-    Object.fromEntries(params);
-
-  if (maxDrivingDistance) {
-    alert("Max driving distance updated to " + maxDrivingDistance);
-  } else if (profilePictureScore) {
-    alert("Profile picture score updated to " + profilePictureScore);
-  } else if (profileDescriptionScore) {
-    alert("Profile description score updated to " + profileDescriptionScore);
-  }
 
   const content = id ? (
     <div className="contentBody">

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "../include/craftsman.h"
-#include <nlohmann/json.hpp> // Include the correct JSON library
+#include "../algorithm/include/json.hpp"
 #include <string>
 #include <algorithm>
 

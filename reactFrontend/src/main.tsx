@@ -1,21 +1,18 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import './css/index.css'
-import Root from './routes/Root';
-import ErrorPage from './routes/ErrorPage';
-import SearchCraftsmenByPostcodePage from './routes/SearchCraftsmenByPostcodePage';
-import RankedCraftsmenPage from './routes/RankedCraftsmenPage';
-import UpdateCraftsmenPage from './routes/UpdateCraftsmenPage';
-import SelectCraftsmenById from './routes/SelectCraftsmenById';
-import { searchPostcodesAction } from './functions/searchPostcodesAction';
-import { searchCraftsmenAction } from './functions/searchCraftsmenAction';
-import { updateCraftsmenAction } from './functions/updateCraftsmenAction';
-import { loadMoreCraftsmen } from './functions/loadMoreCraftsmen';
+import "./css/index.css";
+import Root from "./routes/Root";
+import ErrorPage from "./routes/ErrorPage";
+import SearchCraftsmenByPostcodePage from "./routes/SearchCraftsmenByPostcodePage";
+import RankedCraftsmenPage from "./routes/RankedCraftsmenPage";
+import UpdateCraftsmenPage from "./routes/UpdateCraftsmenPage";
+import SelectCraftsmenById from "./routes/SelectCraftsmenById";
+import { searchPostcodesAction } from "./functions/searchPostcodesAction";
+import { searchCraftsmenAction } from "./functions/searchCraftsmenAction";
+import { updateCraftsmenAction } from "./functions/updateCraftsmenAction";
+import { loadMoreCraftsmen } from "./functions/loadMoreCraftsmen";
 
 const router = createBrowserRouter([
   {
@@ -26,7 +23,7 @@ const router = createBrowserRouter([
   {
     // Page for searching craftsmen by postcode
     path: "/search",
-    element: <SearchCraftsmenByPostcodePage/>,
+    element: <SearchCraftsmenByPostcodePage />,
     errorElement: <ErrorPage />,
     action: searchPostcodesAction,
   },
@@ -53,8 +50,8 @@ const router = createBrowserRouter([
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);

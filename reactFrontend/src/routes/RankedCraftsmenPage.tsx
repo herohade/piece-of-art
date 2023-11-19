@@ -36,7 +36,7 @@ function RankedCraftsmenPage() {
   }, [postcode, numEntries]);
 
   const content = (
-    <>
+    <div className="contentBody">
       <h1>Ranked craftsmen for postcode {postcode}</h1>
       <ul>
         {sortedCraftsman !== undefined &&
@@ -53,7 +53,7 @@ function RankedCraftsmenPage() {
       <Form method="post" id="load-more-form">
         <button type="submit">Load More</button>
       </Form>
-    </>
+    </div>
   );
   return <Page content={content} />;
 }

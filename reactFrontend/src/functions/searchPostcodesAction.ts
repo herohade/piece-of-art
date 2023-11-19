@@ -18,7 +18,8 @@ export async function searchPostcodesAction({
     if (import.meta.env.DEV) {
       console.log("postcode is not valid", postcode);
     }
-    return redirect("/search");
+    alert("Please enter a valid postcode")
+    return null;
   }
   // postcode is valid, redirect to ranked results page
   return redirect(`/search/${postcode}`);

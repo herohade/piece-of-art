@@ -20,7 +20,7 @@ export async function loadMoreCraftsmen({
   const { count } = Object.fromEntries(urlParams.entries());
   const numEntries = isNaN(Number(count)) ? 20 : Number(count);
 
-  const urlPath = "/craftsmen/search/" + postcode + "?count=" + (numEntries + 20);
+  const urlPath = "/search/" + postcode + "?count=" + (numEntries + 20);
   console.log("urlPath", urlPath);
   return redirect(urlPath);
 }

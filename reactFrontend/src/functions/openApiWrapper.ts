@@ -2,7 +2,7 @@ import { DefaultService, OpenAPI } from "../services/openapi";
 
 const { getCraftsmen, patchCraftman } = DefaultService;
 
-OpenAPI.BASE = "http://localhost:3000";
+OpenAPI.BASE = "http://localhost:8080";
 
 export const getCraftsmenByPostalCode = async (postalCode: string, maximum?: number) => {
   try {

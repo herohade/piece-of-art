@@ -18,8 +18,8 @@ export async function searchPostcodesAction({
     if (import.meta.env.DEV) {
       console.log("postcode is not valid", postcode);
     }
-    return redirect("/craftsmen/search");
+    return redirect("/search");
   }
   // postcode is valid, redirect to ranked results page
-  return redirect(`/craftsmen/search/${postcode}`);
+  return redirect(`/search/${postcode}`);
 }

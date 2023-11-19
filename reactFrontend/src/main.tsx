@@ -25,28 +25,28 @@ const router = createBrowserRouter([
   },
   {
     // Page for searching craftsmen by postcode
-    path: "/craftsmen/search",
+    path: "/search",
     element: <SearchCraftsmenByPostcodePage/>,
     errorElement: <ErrorPage />,
     action: searchPostcodesAction,
   },
   {
     // Page for displaying ranked craftsmen
-    path: "/craftsmen/search/:postcode",
+    path: "/search/:postcode",
     element: <RankedCraftsmenPage />,
     errorElement: <ErrorPage />,
     action: loadMoreCraftsmen,
   },
   {
     // Page for selecting the craftsman to update
-    path: "/craftsmen/update",
+    path: "/update",
     element: <SelectCraftsmenById />,
     errorElement: <ErrorPage />,
     action: searchCraftsmenAction,
   },
   {
     // Page for updating craftsmen attributes
-    path: "/craftsmen/update/:id",
+    path: "/update/:id",
     element: <UpdateCraftsmenPage />,
     errorElement: <ErrorPage />,
     action: updateCraftsmenAction,

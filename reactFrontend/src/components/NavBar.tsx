@@ -12,10 +12,10 @@ function NavBar() {
               <Link to={"/"}>Home</Link>
             </li>
             <li className="navListBottom">
-              <Link to={"/craftsmen/search"}>Find Craftsmen</Link>
+              <Link to={"/search"}>Find Craftsmen</Link>
             </li>
             <li className="navListBottom">
-              <Link to={"/craftsmen/update"}>Update Craftsmen</Link>
+              <Link to={"/update"}>Update Craftsmen</Link>
             </li>
           </ul>
         </nav>

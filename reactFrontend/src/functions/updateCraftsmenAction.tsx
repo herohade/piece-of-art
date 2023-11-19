@@ -42,7 +42,7 @@ export async function updateCraftsmenAction({
   } = updated;
 
   const urlPath = new URL(
-    "/craftsmen/update/" + id + maxDrivingDistanceUpdated
+    "/update/" + id + maxDrivingDistanceUpdated
       ? "?maxDrivingDistance=" + maxDrivingDistanceUpdated
       : "" + profilePictureScoreUpdated
       ? "?profilePictureScore=" + profilePictureScoreUpdated

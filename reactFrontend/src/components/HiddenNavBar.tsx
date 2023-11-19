@@ -33,10 +33,10 @@ function HiddenNavBar({ hidden }: Props) {
                 <Link to={"/"}>Home</Link>
               </li>
               <li className="navListTop">
-                <Link to={"/craftsmen/search"}>Find Craftsmen</Link>
+                <Link to={"/search"}>Find Craftsmen</Link>
               </li>
               <li className="navListTop">
-                <Link to={"/craftsmen/update"}>Update Craftsmen</Link>
+                <Link to={"/update"}>Update Craftsmen</Link>
               </li>
             </ul>
           </nav>

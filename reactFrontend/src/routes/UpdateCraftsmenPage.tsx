@@ -3,7 +3,7 @@ import Page from "../components/Page";
 
 // Page for searching craftsmen by postcode
 function UpdateCraftsmenPage() {
-  // get id from url: /craftsmen/update/:id
+  // get id from url: /update/:id
   const { id } = useParams();
   
   const {search} = useLocation();

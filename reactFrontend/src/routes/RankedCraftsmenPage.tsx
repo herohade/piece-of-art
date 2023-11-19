@@ -7,7 +7,7 @@ import { Craftsman, Response } from "../services/openapi";
 
 // Page for searching craftsmen by postcode
 function RankedCraftsmenPage() {
-  // get postcode from url: /craftsmen/search/:postcode
+  // get postcode from url: /search/:postcode
   const { postcode } = useParams();
 
   if (!postcode) {

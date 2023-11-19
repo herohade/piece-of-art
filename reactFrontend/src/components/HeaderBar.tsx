@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../css/NavBar.css";
 import HiddenNavBar from "./HiddenNavBar";
+import { Link } from "react-router-dom";
 
 // Navigation bar at the bottom of the page
 function HeaderBar() {
@@ -9,7 +10,9 @@ function HeaderBar() {
     <>
       <header>
         <div className="headerTop">
-          <div className="headerLogo"></div>
+          <Link to="/">
+            <div className="headerLogo"></div>
+          </Link>
           <div className="headerNavigation">
             <HiddenNavBar hidden={hiddenNav} />
             <button

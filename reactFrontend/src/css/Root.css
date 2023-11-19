@@ -6,6 +6,15 @@
   text-align: center;
 }
 
+.logo {
+  padding: 2em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 3em rgb(6, 55, 115));
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -86,6 +95,9 @@
   /* margin-bottom: 3rem; */
   width: 100%;
   height: calc(100% - 5rem);
+}
+.root h1 {
+  margin-top: 6rem;
 }
 
 .footer {

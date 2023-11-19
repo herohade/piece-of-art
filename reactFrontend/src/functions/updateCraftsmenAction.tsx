@@ -19,6 +19,17 @@ export async function updateCraftsmenAction({
   const updates = Object.fromEntries(formData);
   const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } =
     updates;
+  if (
+    !maxDrivingDistance &&
+    !profilePictureScore &&
+    !profileDescriptionScore
+  ) {
+    if (import.meta.env.DEV) {
+      console.log("undefined updates");
+    }
+    alert("Please fill out at least one field")
+    return null;
+  }
   const response = await patchCraftmanProfile(
     id,
     maxDrivingDistance ? Number(maxDrivingDistance.valueOf()) : null,

@@ -5,10 +5,11 @@ import Page from "../components/Page";
 function UpdateCraftsmenPage() {
   // get id from url: /update/:id
   const { id } = useParams();
-  
-  const {search} = useLocation();
+
+  const { search } = useLocation();
   const params = new URLSearchParams(search);
-  const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } = Object.fromEntries(params);
+  const { maxDrivingDistance, profilePictureScore, profileDescriptionScore } =
+    Object.fromEntries(params);
 
   if (maxDrivingDistance) {
     alert("Max driving distance updated to " + maxDrivingDistance);
@@ -19,7 +20,7 @@ function UpdateCraftsmenPage() {
   }
 
   const content = id ? (
-    <>
+    <div className="contentBody">
       <h1>Update Craftsman {id}</h1>
       {/* MAX_DRIVING_DISTANCE */}
       <Form method="post" id="max-driving-distance-form">
@@ -53,7 +54,7 @@ function UpdateCraftsmenPage() {
         </label>
         <button type="submit">Update</button>
       </Form>
-    </>
+    </div>
   ) : (
     <>
       <h1>Craftsman {id} not found</h1>

@@ -88,10 +88,10 @@ void updateCraftsman(crow::response &res, const crow::request &req, int craftsma
         craftsman = craftsmenData[1];
     }
     // Check if at least one attribute is defined in the request
-    if (!jsonRequest["maxDrivingDistance"] &&
-        !jsonRequest["profilePictureScore"] &&
-        !jsonRequest["profileDescriptionScore"]) {
-        res.code = 400; // Bad Request
+    if ((!jsonRequest["maxDrivingDistance"] || jsonRequest["maxDrivingDistance"].t()git  == crow::json::type::Null) &&
+            (!jsonRequest["profilePictureScore"] || jsonRequest["profilePictureScore"].t() == crow::json::type::Null) &&
+            (!jsonRequest["profileDescriptionScore"] || jsonRequest["profileDescriptionScore"].t() == crow::json::type::Null)) {
+        res.code = 400; // Bad Request:
         res.body = "At least one attribute should be defined in the request";
         res.set_header("Content-Type", "application/json");
         res.add_header("Access-Control-Allow-Origin", "*");
@@ -99,15 +99,15 @@ void updateCraftsman(crow::response &res, const crow::request &req, int craftsma
         return;
     }
     // Update attributes if they are defined in the request
-    if (jsonRequest["maxDrivingDistance"]) {
+    if (jsonRequest["maxDrivingDistance"] && jsonRequest["maxDrivingDistance"].t() != crow::json::type::Null) {
         craftsman.setMaxDrivingDistance(jsonRequest["maxDrivingDistance"].d());
     }
 
-    if (jsonRequest["profilePictureScore"]) {
+    if (jsonRequest["profilePictureScore"] && jsonRequest["profilePictureScore"].t() != crow::json::type::Null) {
         craftsman.setProfilePictureScore( jsonRequest["profilePictureScore"].d());
     }
 
-    if (jsonRequest["profileDescriptionScore"]) {
+    if (jsonRequest["profileDescriptionScore"] && jsonRequest["profileDescriptionScore"].t() != crow::json::type::Null) {
         craftsman.setProfileDescriptionScore(jsonRequest["profileDescriptionScore"].d());
     }
     // Prepare response

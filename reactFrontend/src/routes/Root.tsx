@@ -1,22 +1,27 @@
-import { useState } from "react";
-
 import Page from "../components/Page";
-
+import { useDvdScreensaver } from "react-dvd-screensaver";
+import check24Logo from "../assets/check24-logo.svg";
 import "../css/Root.css";
+import { RefObject } from "react";
 
 // The root of the website
 // TODO: pretty up
 function Root() {
-  const [count, setCount] = useState(100);
+  const dvdScreensaver = useDvdScreensaver({ speed: 5 });
 
   const content = (
     <div className="contentBody">
-      <div className="rotate">Rest in Peace</div>
-      <h1>We are fucked</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          {count} people agree
-        </button>
+      <h1>Find skilled craftsmen in your area!</h1>
+      <div
+        ref={dvdScreensaver.containerRef as RefObject<HTMLDivElement>}
+        style={{ width: "100%", height: "70%" }}
+      >
+        <div
+          ref={dvdScreensaver.elementRef as RefObject<HTMLDivElement>}
+          style={{ width: "8%", height: "auto" }}
+        >
+          <img src={check24Logo} />
+        </div>
       </div>
     </div>
   );

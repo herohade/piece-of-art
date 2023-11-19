@@ -16,7 +16,8 @@ export async function searchCraftsmenAction({
     if (import.meta.env.DEV) {
       console.log("craftsmanId is not valid", craftsmanId);
     }
-    return redirect("/update");
+    alert("Please enter a valid craftsmanId")
+    return null;
   }
   // craftsmanId is valid, redirect to update page
   return redirect(`/update/${craftsmanId}`);

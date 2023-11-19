@@ -1,4 +1,4 @@
-#include <../include/crow_all.h>
+#include "../include/crow_all.h"
 #include <iostream>
 #include <vector>
 #include "../include/craftsman.h"
@@ -58,26 +58,79 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
             newResponse["craftsmen"][i] = response["craftsmen"][i];
         }
         res.body = newResponse.dump();
-        res.end();
     }
     else {
         res.body = response.dump();
     }
     res.code = 200;
-    res.set_header("Content-Type", "application/json");
-    res.set_header("Access-Control-Allow-Origin", "http://localhost:5173");
+    res.add_header("Content-Type", "application/json");
+    res.add_header("Access-Control-Allow-Origin", "*");
     // Send the response
     res.end();
 }
 
 
-// Function to update a craftsman's profile information
-void updateCraftsmanProfile(crow::response &res, int craftsmanId) {
-    // Extract data from request body and update craftsman profile
-    // For simplicity, just acknowledge the update here
-    res.code = 200;
-    res.body = "Craftsman profile updated successfully";
+// Function to handle PATCH request
+void updateCraftsman(crow::response &res, const crow::request &req, int craftsmanId) {
+    // Parse JSON from request body
+    auto jsonRequest = crow::json::load(req.body);
+    res.add_header("Content-Type", "application/json");
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+    if (!jsonRequest) {
+        res.code = 400; // Bad Request
+        res.body = "Invalid JSON in request body";
+        res.end();
+        return;
+    }
+    Craftsman craftsman;
+    // Get the Craftsman object based on craftsmanId (you need to implement this)
+    if (craftsmanId % 2) {
+        craftsman = craftsmenData[0];
+    }
+    else {
+        craftsman = craftsmenData[1];
+    }
+    // Check if at least one attribute is defined in the request
+    if (!jsonRequest["maxDrivingDistance"] &&
+        !jsonRequest["profilePictureScore"] &&
+        !jsonRequest["profileDescriptionScore"]) {
+        res.code = 400; // Bad Request
+        res.body = "At least one attribute should be defined in the request";
+        res.set_header("Content-Type", "application/json");
+        res.add_header("Access-Control-Allow-Origin", "*");
+        res.end();
+        return;
+    }
+    // Update attributes if they are defined in the request
+    if (jsonRequest["maxDrivingDistance"]) {
+        craftsman.setMaxDrivingDistance(jsonRequest["maxDrivingDistance"].d());
+    }
+
+    if (jsonRequest["profilePictureScore"]) {
+        craftsman.setProfilePictureScore( jsonRequest["profilePictureScore"].d());
+    }
+
+    if (jsonRequest["profileDescriptionScore"]) {
+        craftsman.setProfileDescriptionScore(jsonRequest["profileDescriptionScore"].d());
+    }
+    // Prepare response
+    nlohmann::json updatedObject;
+    updatedObject["maxDrivingDistance"] = craftsman.getMaxDrivingDistance();
+    updatedObject["profilePictureScore"] = craftsman.getProfilePictureScore();
+    updatedObject["profileDescriptionScore"] = craftsman.getProfileDescriptionScore();
+    nlohmann::json jsonResponse;
+    jsonResponse["id"] = craftsman.getId();
+    jsonResponse["updated"] = updatedObject;
+    // Set response code and body
+    res.code = 200; // OK
+    res.set_header("Content-Type", "application/json");
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.body = jsonResponse.dump();
+    std::cout << res.body << std::endl;
+    res.end();
 }
+
 // Function to expose api json
 void getEndpoints(crow::response &res) {
     try {
@@ -95,8 +148,10 @@ void getEndpoints(crow::response &res) {
 }
 
 int main() {
-    craftsmenData.push_back(Craftsman(1, "John", "Smith", 74, "81927"));
-    craftsmenData.push_back(Craftsman(2, "Jane", "Long", 85, "81927"));
+    craftsmenData.push_back(Craftsman(1, "John", "Smith", 74, "81927", "", "","",1.0,1.0,30,1.0,1.0));
+    craftsmenData.push_back(Craftsman(2, "Jane", "Long", 85, "81927", "", "","",1.0,1.0,30,1.0,1.0));
+    craftsmenData.push_back(Craftsman(3, "Andriy", "Manucharyan", 100, "10230", "","","",1.0,1.0,30,1.0,1.0));
+    craftsmenData.push_back(Craftsman(4, "David", "Eroglu", 2, "54203", "","","",1.0,1.0,30,1.0,1.0));
     // Define route for retrieving craftsmen
     crow::SimpleApp app;
 
@@ -106,11 +161,19 @@ int main() {
                     ([&](const crow::request &req, crow::response &res) {
                         getCraftsmen(res, req);
                     });
+
     CROW_ROUTE(app, "/api-json")
             .methods("GET"_method)
                     ([&](const crow::request &req, crow::response &res) {
                         getEndpoints(res);
                     });
+
+    CROW_ROUTE(app, "/craftman/<int>")
+            .methods("PATCH"_method)
+                    ([&](const crow::request &req, crow::response &res, int craftsmanId) {
+                        updateCraftsman(res, req, craftsmanId);
+                    });
+
     // Start the server
     app.port(3000).multithreaded().run();
 

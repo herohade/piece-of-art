@@ -1,0 +1,25 @@
+# backend/Dockerfile and reactFrontend/Dockerfile
+
+version: '1.0'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    networks:
+      - hackatum2023
+    ports:
+      - 3000:3000
+  frontend:
+    build:
+      context: ./reactFrontend
+      dockerfile: Dockerfile
+    networks:
+      - hackatum2023
+    ports:
+      - 4173:4173
+
+networks:
+  hackatum2023:
+    driver: bridge

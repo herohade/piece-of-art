@@ -8,8 +8,6 @@
 #include <map>
 #include "../adaptive-radix-tree/include/art.hpp"
 
-using namespace std;
-
 struct PostcodeInfo {
     double lon;
     double lat;
@@ -19,11 +17,11 @@ struct PostcodeInfo {
 const double defaultDistance = 80000;
 const double EARTH_RADIUS = 6371.0;
 
-unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
-    ifstream file(filename);
+std::unordered_map<std::string, PostcodeInfo> readPostcodes(std::string filename) {
+    std::ifstream file(filename);
 
     if (!file.is_open()) {
-        cerr << "Error opening file!" << endl;
+        std::cerr << "Error opening file!\n";
         return {};
     }
 
@@ -31,7 +29,7 @@ unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
     file >> data;
     file.close();
 
-    unordered_map<string, PostcodeInfo> postcodeMap;
+    std::unordered_map<std::string, PostcodeInfo> postcodeMap;
 
     for (const auto& entry : data) {
         PostcodeInfo info;
@@ -45,10 +43,10 @@ unordered_map<string, PostcodeInfo> readPostcodes(string filename) {
 
 
 // Returns a map of craftsmans from service craftsman and quality factor files
-unordered_map<int, Craftsman> readCraftsmen(string profile_filename, string score_filename) {
-    ifstream file(profile_filename);
+std::unordered_map<int, Craftsman> readCraftsmen(std::string profile_filename, std::string score_filename) {
+    std::ifstream file(profile_filename);
     if (!file.is_open()) {
-        cerr << "Error opening file!" << endl;
+        std::cerr << "Error opening file!\n";
         return {};
     }
 
@@ -56,7 +54,7 @@ unordered_map<int, Craftsman> readCraftsmen(string profile_filename, string scor
     file >> data;
     file.close();
 
-    unordered_map<int, Craftsman> craftmansMap;
+    std::unordered_map<int, Craftsman> craftmansMap;
 
     for (const auto& entry : data) {
         Craftsman craftsman = Craftsman(entry["id"], entry["first_name"], entry["last_name"], entry["city"], entry["street"], entry["house_number"],
@@ -64,10 +62,10 @@ unordered_map<int, Craftsman> readCraftsmen(string profile_filename, string scor
         craftmansMap.insert({entry["id"], craftsman});
     }
 
-    ifstream scoreFile(score_filename);
+    std::ifstream scoreFile(score_filename);
 
     if (!scoreFile.is_open()) {
-        cerr << "Error opening file!" << endl;
+        std::cerr << "Error opening file!\n";
         return {};
     }
 
@@ -102,7 +100,7 @@ double calculateRank(double distance, const Craftsman& craftsman) {
 }
 
 // Returns a sorted vector of service craftsmans according to their ranks
-vector<pair<Craftsman, double>> getTopNRankedCraftsmans(string customerPostcode, const unordered_map<string, PostcodeInfo>& postcodes, const unordered_map<int, Craftsman>& all_craftsmans, int n) {
+std::vector<std::pair<Craftsman, double>> getTopNRankedCraftsmans(std::string customerPostcode, const std::unordered_map<std::string, PostcodeInfo>& postcodes, const std::unordered_map<int, Craftsman>& all_craftsmans, int n) {
     auto it = postcodes.find(customerPostcode);
     if (it == postcodes.end()) return {};
     PostcodeInfo info = it->second;
@@ -114,7 +112,7 @@ vector<pair<Craftsman, double>> getTopNRankedCraftsmans(string customerPostcode,
         delta_distance = 5000;
     }
 
-    vector<pair<Craftsman, double>> craftsmans;
+    std::vector<std::pair<Craftsman, double>> craftsmans;
 
     short cnt6 = 0;
     short cnt5 = 0;
@@ -141,13 +139,14 @@ vector<pair<Craftsman, double>> getTopNRankedCraftsmans(string customerPostcode,
         return a.second > b.second; 
     });
     
+    craftsmans.resize(n);
     return craftsmans;
 }
 
-art::art<std::vector<std::pair<Craftsman, double>>> fill_the_tree(int n, unordered_map<std::string, PostcodeInfo>& postcodes, std::unordered_map<int, Craftsman>& all_craftsmen) {
-    art::art<std::vector<pair<Craftsman, double>>> tree;
+art::art<std::vector<std::pair<Craftsman, double>>> fill_the_tree(int n, std::unordered_map<std::string, PostcodeInfo>& postcodes, std::unordered_map<int, Craftsman>& all_craftsmen) {
+    art::art<std::vector<std::pair<Craftsman, double>>> tree;
     for (const auto& postcode : postcodes) {
-        vector<pair<Craftsman, double>> craftsmen = getTopNRankedCraftsmans(postcode.first, postcodes, all_craftsmen, n);
+        std::vector<std::pair<Craftsman, double>> craftsmen = getTopNRankedCraftsmans(postcode.first, postcodes, all_craftsmen, n);
         tree.set(postcode.first.c_str(), craftsmen);
     }
     return tree;
@@ -175,17 +174,18 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
     response["craftsmen"] = nlohmann::json::array();
     if (req.url_params.get("maximum") != nullptr) {
         int limit = std::stoi(req.url_params.get("maximum"));
-        if (limit <= 20) matchingCraftsmen = art_tree.get(postalCode);
+        /*if (limit <= 20) matchingCraftsmen = art_tree.get(postalCode);
         else {
             art_tree = fill_the_tree(limit, postcodeData, craftsmenData);
-        }
+        }*/
+        matchingCraftsmen = getTopNRankedCraftsmans(postalCode, postcodeData, craftsmenData, limit);
         nlohmann::json newResponse;
         newResponse["craftsmen"] = nlohmann::json::array();
-        limit = fmin(limit, response["craftsmen"].size());
-        for (int i = 0; i < limit; ++i) {
+        limit = fmin(limit, matchingCraftsmen.size());
+        /*for (int i = 0; i < limit; ++i) {
             newResponse["craftsmen"][i] = response["craftsmen"][i];
         }
-        res.body = newResponse.dump();
+        res.body = newResponse.dump();*/
     }
     else {
         res.body = response.dump();
@@ -201,6 +201,7 @@ void getCraftsmen(crow::response &res, const crow::request &req) {
             craftsmanObject["rankingScore"] = craftsman.second;
             response["craftsmen"].push_back(craftsmanObject);
         }
+        res.body = response.dump();
     } else {
         // No craftsmen found
         res.body = response.dump();
@@ -292,7 +293,7 @@ void getEndpoints(crow::response &res) {
 int main() {
     craftsmenData = readCraftsmen("data/service_provider_profile.json", "data/quality_factor_score.json");
     postcodeData = readPostcodes("data/postcode.json");
-    art_tree = fill_the_tree(20, postcodeData, craftsmenData);
+    //art_tree = fill_the_tree(20, postcodeData, craftsmenData);
     // Define route for retrieving craftsmen
     crow::SimpleApp app;
 

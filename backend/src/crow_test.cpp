@@ -231,7 +231,7 @@ void updateCraftsman(crow::response &res, const crow::request &req, int craftsma
         return;
     }
     // Get the Craftsman object based on craftsmanId (you need to implement this)
-    Craftsman craftsman = craftsmenData[craftsmanId];
+    Craftsman& craftsman = craftsmenData[craftsmanId];
     // Check if at least one attribute is defined in the request
     if ((!jsonRequest["maxDrivingDistance"] || jsonRequest["maxDrivingDistance"].t()  == crow::json::type::Null) &&
             (!jsonRequest["profilePictureScore"] || jsonRequest["profilePictureScore"].t() == crow::json::type::Null) &&
@@ -255,7 +255,7 @@ void updateCraftsman(crow::response &res, const crow::request &req, int craftsma
     if (jsonRequest["profileDescriptionScore"] && jsonRequest["profileDescriptionScore"].t() != crow::json::type::Null) {
         craftsman.setProfileDescriptionScore(jsonRequest["profileDescriptionScore"].d());
     }
-    art_tree = fill_the_tree(20, postcodeData, craftsmenData);
+    //art_tree = fill_the_tree(20, postcodeData, craftsmenData);
     // Prepare response
     nlohmann::json updatedObject;
     updatedObject["maxDrivingDistance"] = craftsman.getMaxDrivingDistance();
